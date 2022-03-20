@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package service;
+
+option go_package = "pb";
+
+service Ota {
+    rpc Update (UpdateRequest) returns (UpdateReply) { }
+}
+
+message UpdateRequest {
+    string url = 1;
+}
+
+message UpdateReply {
+    bool ok = 1;
+    string message = 2;
+}
