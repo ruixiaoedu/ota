@@ -20,6 +20,7 @@ func NewService(c interfaces.Core) *Service {
 
 type Service struct {
 	core interfaces.Core // 核心
+	gs   *grpc.Server    // grpc服务器
 }
 
 func (s *Service) Update(ctx context.Context, up *pb.UpdateRequest) (*pb.UpdateReply, error) {
@@ -60,14 +61,23 @@ func (s *Service) Update(ctx context.Context, up *pb.UpdateRequest) (*pb.UpdateR
 	}, nil
 }
 
+func (s *Service) Close() {
+	if s.gs != nil {
+		s.gs.Stop()
+		s.gs = nil
+	}
+}
+
 func (s *Service) Server() error {
 
+	s.Close()
+
 	// 创建gRPC服务器
-	gs := grpc.NewServer()
+	s.gs = grpc.NewServer()
 
 	// 注册服务
-	pb.RegisterOtaServer(gs, s)
-	reflection.Register(gs)
+	pb.RegisterOtaServer(s.gs, s)
+	reflection.Register(s.gs)
 
 	// 监听Unix Socket
 	lis, err := s.listen()
@@ -76,7 +86,7 @@ func (s *Service) Server() error {
 	}
 
 	log.Println("grpc service is starting...")
-	if err := gs.Serve(lis); err != nil {
+	if err := s.gs.Serve(lis); err != nil {
 		log.Printf("run service fail: %s", err)
 		return err
 	}

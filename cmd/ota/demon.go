@@ -23,6 +23,17 @@ func demon(c *core.Core) {
 		return us.Server()
 	})
 
+	g.Go(func() error {
+		select {
+		case <-ctx.Done():
+			log.Println("errgroup exit...")
+		}
+
+		log.Println("shutting down server...")
+		us.Close()
+		return nil
+	})
+
 	// 监听退出命令
 	g.Go(func() error {
 		quit := make(chan os.Signal, 0)
@@ -37,5 +48,5 @@ func demon(c *core.Core) {
 	})
 
 	// 报告错误
-	log.Fatalf("error exiting: %+v\n", g.Wait())
+	log.Printf("error exiting: %v", g.Wait())
 }
