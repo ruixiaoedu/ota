@@ -13,7 +13,7 @@ var (
 	app        = kingpin.New("ota", "over-the-air software updater")
 	configFlag = app.Flag("config", "the config of software updater").Short('c').String()
 
-	serviceCommand = app.Command("service", "start with service program")
+	demonCommand = app.Command("demon", "start with demon program")
 
 	updateCommand  = app.Command("update", "run the update program")
 	standAloneFlag = updateCommand.Flag("stand-alone", "update without use daemon mode").Bool()
@@ -39,8 +39,8 @@ func main() {
 	c := core.NewCore(cfg)
 
 	switch command {
-	case serviceCommand.FullCommand(): // 服务模式
-		service(c)
+	case demonCommand.FullCommand(): // 服务模式
+		demon(c)
 	case updateCommand.FullCommand(): // 升级
 		update(c)
 	}
