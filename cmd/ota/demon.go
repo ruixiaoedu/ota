@@ -12,8 +12,8 @@ import (
 	"syscall"
 )
 
-// service 启动服务
-func service(c *core.Core) {
+// demon 启动服务
+func demon(c *core.Core) {
 
 	g, ctx := errgroup.WithContext(context.Background())
 
