@@ -2,8 +2,8 @@ package test
 
 import (
 	"fmt"
+	"github.com/ruixiaoedu/ota/config"
 	"github.com/ruixiaoedu/ota/core"
-	"github.com/ruixiaoedu/ota/utils"
 	"os"
 	"testing"
 )
@@ -11,8 +11,9 @@ import (
 // TestUpdate 测试升级
 func TestUpdate(t *testing.T) {
 
-	pubKey, _ := utils.ParsePublicKey([]byte(publicKey))
-	core := core.NewCore(pubKey)
+	core := core.NewCore(&config.Config{
+		Keyfile: "",
+	})
 
 	f, _ := os.Open("ota.tar.gz")
 	defer f.Close()

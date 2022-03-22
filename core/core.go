@@ -172,8 +172,14 @@ func (core *Core) updateFromDir(dir string) error {
 	}
 
 	for _, v := range description.Scripts {
-		if !utils.FileExist(path.Join(dir, v.Filename)) {
-			return errors.New("文件不存在")
+		file, err := os.Open(path.Join(dir, v.Filename))
+		if err != nil {
+			return err
+		}
+		fi, err := file.Stat()
+		if err != nil {
+			file.Close()
+			return err
 		}
 
 		switch v.Type {
@@ -182,7 +188,13 @@ func (core *Core) updateFromDir(dir string) error {
 		case "postinstall":
 			postinstalls = append(postinstalls, v)
 		default:
+			file.Close()
 			return errors.New("无效的type")
+		}
+
+		if err = file.Chmod(fi.Mode() | os.FileMode(0111)); err != nil {
+			file.Close()
+			log.Println("chmod file mode fail", err)
 		}
 
 		files = append(files, struct {
