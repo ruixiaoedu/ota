@@ -256,11 +256,16 @@ func (core *Core) updateFromDir(dir string) error {
 		}
 		source, err := os.Open(path.Join(dir, v.Filename))
 		if err != nil {
+			destination.Close()
 			return err
 		}
 		if _, err = io.Copy(destination, source); err != nil {
+			destination.Close()
+			source.Close()
 			return err
 		}
+		destination.Close()
+		source.Close()
 	}
 
 	// 执行完成执行文件
