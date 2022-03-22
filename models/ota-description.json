@@ -1,0 +1,23 @@
+{
+  "name": "the app name",
+  "version": "1.0.0",
+  "description": "Firmware update for XXXXX Project",
+  "reboot": false,
+  "files": [{
+    "filename": "README",
+    "path": "/README",
+    "md5": "",
+    "sha256": ""
+  }],
+  "scripts": [{
+    "filename": "README",
+    "type": "preinstall",
+    "md5": "",
+    "sha256": ""
+  },{
+    "filename": "README",
+    "type": "postinstall",
+    "md5": "",
+    "sha256": ""
+  }]
+}
